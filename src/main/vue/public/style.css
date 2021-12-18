@@ -1,0 +1,104 @@
+#content {
+    background-color: #f4f4f4;
+    min-height: 695px;
+}
+#canvas {
+    border: 1px solid rgba(34, 36, 38, 0.15);
+    border-radius: 0.28571429rem;
+}
+.ui.inverted.vertical.center.aligned.segment {
+    margin-top: 0;
+    padding: 16.3px;
+}
+.ui.inverted.vertical.center.aligned.footer.segment {
+    padding: 19px;
+}
+@media all and (min-width:1046px) {
+    #canvas {
+        width: 264px;
+        height: 264px;
+    }
+    .ui.large.inverted.secondary.menu.adaptive {
+        width: 790px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .ui.form.adaptive {
+        width: 777px;
+        margin-top: 49px;
+        margin-left: auto;
+        margin-right: auto;
+        min-height: 578px;
+        text-align: left;
+    }
+    .ui.raised.green.segment.adaptive {
+        height: 341px;
+        width: 469px;
+        margin-left: 308px;
+        margin-top: -355px;
+    }
+    .ui.raised.blue.segment.adaptive {
+        height: 341px;
+        width: 294px;
+    }
+}
+@media all and (min-width:719px) and (max-width:1045px) {
+    #canvas {
+        margin-top: 36px;
+        width: 192px;
+        height: 192px;
+    }
+    .ui.form.adaptive {
+        width: 705px;
+        margin-top: 14px;
+        min-height: 578px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .ui.raised.green.segment.adaptive {
+        height: 341px;
+        width: 469px;
+        margin-left: 236px;
+        margin-top: -355px;
+    }
+    .ui.raised.blue.segment.adaptive {
+        height: 341px;
+        width: 222px;
+    }
+}
+@media all and (max-width:718px) {
+    .ui.form.adaptive {
+        width: 469px;
+        margin-top: 14px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .ui.raised.green.segment.adaptive {
+        height: 341px;
+        width: 469px;
+    }
+    .ui.raised.blue.segment.adaptive {
+        height: 341px;
+        width: 469px;
+    }
+    #canvas {
+        width: 264px;
+        height: 264px;
+        margin-left: 88px;
+    }
+    .ui.inverted.vertical.center.aligned.segment {
+        padding: 17.5px;
+    }
+    .ui.header.inverted.grey {
+        font-size: 22px;
+    }
+}
+.forgot {
+    color: #D3D3D3;
+    text-transform: none;
+    font-weight: normal;
+    font-style: italic;
+}
+.forgot:hover {
+    color: #ababab;
+}

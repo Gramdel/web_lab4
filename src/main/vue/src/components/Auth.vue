@@ -2,7 +2,7 @@
     <div id="content">
         <script type="application/javascript">
             $(document)
-                .ready(function() {
+                .ready(function () {
                     $('.ui.form').form({
                         fields: {
                             username: {
@@ -10,11 +10,11 @@
                                 rules: [
                                     {
                                         type: 'empty',
-                                        prompt: 'Please enter your username'
+                                        prompt: 'Your username can\'t be empty'
                                     },
                                     {
                                         type: 'length[3]',
-                                        prompt: 'Your name must be at least 3 characters'
+                                        prompt: 'Username must contain at least 3 characters'
                                     }
                                 ]
                             },
@@ -23,11 +23,11 @@
                                 rules: [
                                     {
                                         type: 'empty',
-                                        prompt: 'Please enter your password'
+                                        prompt: 'Your password can\'t be empty'
                                     },
                                     {
                                         type: 'length[6]',
-                                        prompt: 'Your password must be at least 6 characters'
+                                        prompt: 'Password must contain at least 6 characters'
                                     }
                                 ]
                             }
@@ -37,14 +37,13 @@
                 })
             ;
         </script>
-        <div class="ui inverted center aligned segment" style="border-radius: 0; margin-top: 0;">
-            <div class="ui container">
-                <h1 class="ui header inverted grey">Асташин Сергей P3230 | Вариант 30903</h1>
-            </div>
+        <div class="ui inverted vertical center aligned segment">
+            <h2 class="ui header inverted grey">Асташин Сергей P3230 | Вариант 30903</h2>
         </div>
-        <div class="ui middle aligned center aligned grid" style="margin-top: 26vh;margin-bottom: 26vh;">
+        <div class="ui middle aligned center aligned grid" style="margin-top: 75px;">
             <div class="column" style="width: 400px;">
-                <div class="ui raised segment">
+                <div class="ui raised black segment">
+                    <h2 class="ui header">Authentication</h2>
                     <form class="ui large form" action="/main">
                         <div class="field">
                             <div class="ui left icon input">
@@ -74,20 +73,10 @@
                             </button>
                         </div>
                         <div class="ui fitted horizontal divider" style="margin-top: 11px;">
-                            <a href="" style="color: #D3D3D3; text-transform: none; font-weight: normal; font-style: italic;">Forgot password?</a>
+                            <a href="" class="forgot">Forgot password?</a>
                         </div>
-                        <div class="ui error message" style="background-color: white"></div>
+                        <div class="ui error message"></div>
                     </form>
-                </div>
-            </div>
-        </div>
-        <div class="ui inverted vertical footer segment" style="padding: 19px;top: 1px;">
-            <div class="ui center aligned container">
-                <div class="ui horizontal inverted small divided link list">
-                    <a class="item" href="#">Site Map</a>
-                    <a class="item" href="#">Contact Us</a>
-                    <a class="item" href="#">Terms and Conditions</a>
-                    <a class="item" href="#">Privacy Policy</a>
                 </div>
             </div>
         </div>
