@@ -1,5 +1,4 @@
 #content {
-    background-color: #f4f4f4;
     min-height: 695px;
 }
 #canvas {
@@ -28,7 +27,6 @@
         margin-top: 49px;
         margin-left: auto;
         margin-right: auto;
-        min-height: 578px;
         text-align: left;
     }
     .ui.raised.green.segment.adaptive {
@@ -41,6 +39,10 @@
         height: 341px;
         width: 294px;
     }
+    .ui.raised.black.segment.adaptive {
+        width: 777px;
+        margin: 49px auto;
+    }
 }
 @media all and (min-width:719px) and (max-width:1045px) {
     #canvas {
@@ -51,7 +53,6 @@
     .ui.form.adaptive {
         width: 705px;
         margin-top: 14px;
-        min-height: 578px;
         margin-left: auto;
         margin-right: auto;
     }
@@ -64,6 +65,12 @@
     .ui.raised.blue.segment.adaptive {
         height: 341px;
         width: 222px;
+    }
+    .ui.raised.black.segment.adaptive {
+        width: 705px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 14px;
     }
 }
 @media all and (max-width:718px) {
@@ -91,6 +98,12 @@
     }
     .ui.header.inverted.grey {
         font-size: 22px;
+    }
+    .ui.raised.black.segment.adaptive {
+        width: 469px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 14px;
     }
 }
 .forgot {
