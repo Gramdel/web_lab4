@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MainController {
 
     @RequestMapping("/api/main")
-    public String showMsg() {
+    private String showMsg() {
         return "main";
     }
 }

@@ -41,7 +41,7 @@
                     Auth
                 </a>
                 <div class="right menu">
-                    <a class="item">
+                    <a class="item" @click="logout">
                         Logout&nbsp;<i class="sign-out icon"></i>
                     </a>
                 </div>
@@ -57,13 +57,13 @@
                 <h4 style="margin-top: 0;">Coordinate X</h4>
                 <div class="field" style="display: inline-block; margin-right: 1em;margin-bottom: 19px;">
                     <div class="ui radio checkbox">
-                        <input type="radio" name="x" tabindex="0" checked value="-4">
+                        <input type="radio" name="x" tabindex="0" value="-4">
                         <label>-4</label>
                     </div>
                 </div>
                 <div class="field" style="display: inline-block; margin-right: 1em;">
                     <div class="ui radio checkbox">
-                        <input type="radio" name="x" tabindex="0" value="-3">
+                        <input type="radio" name="x" tabindex="0" checked value="-3">
                         <label>-3</label>
                     </div>
                 </div>
@@ -344,6 +344,17 @@ function drawArea(r) {
 }
 
 export default {
+    created() {
+        if(localStorage.getItem('jwt') == null) {
+            this.$router.push('auth');
+        }
+    },
+    methods: {
+        logout() {
+            localStorage.removeItem('jwt');
+            this.$router.push('auth');
+        },
+    },
     mounted() {
         let list = $('input[name=r]');
         for (let i = 0; i < list.length; i++) {

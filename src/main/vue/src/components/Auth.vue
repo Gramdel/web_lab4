@@ -36,12 +36,6 @@
                     }
                 });
             });
-            document.querySelectorAll('.field')[0].addEventListener("keydown", function () {
-                $('.error.message').css('display', 'none');
-            });
-            document.querySelectorAll('.field')[1].addEventListener("keydown", function () {
-                $('.error.message').css('display', 'none');
-            });
         </script>
         <div class="ui inverted vertical center aligned segment">
             <h2 class="ui header inverted grey">Асташин Сергей P3230 | Вариант 30903</h2>
@@ -64,19 +58,13 @@
                             </div>
                         </div>
                         <div class="ui large buttons" style="justify-content: center;">
-                            <button class="ui fade animated blue submit button" style="width: 168px" @click="login()">
-                                <div class="visible content">Login</div>
-                                <div class="hidden content">
-                                    <i class="right arrow icon"></i>
-                                </div>
+                            <button class="ui blue submit button" style="width: 168px" @click="login">
+                                Login
                             </button>
                             <div class="or"></div>
-                            <button class="ui fade animated green submit button" style="width: 168px"
-                                    @click="register()">
-                                <div class="visible content">Register</div>
-                                <div class="hidden content">
-                                    <i class="check icon"></i>
-                                </div>
+                            <button class="ui green submit button" style="width: 168px"
+                                    @click="register">
+                                Register
                             </button>
                         </div>
                         <div class="ui fitted horizontal divider" style="margin-top: 11px;">
@@ -101,22 +89,28 @@ export default {
             password: ''
         }
     },
+    created() {
+        if (localStorage.getItem('jwt') != null) {
+            this.$router.push('main');
+        }
+    },
     methods: {
-        login: function () {
-            this.sendRequest('login', this.$router, this.username, this.password);
+        login(e) {
+            this.sendRequest('login', this.$router, this.username, this.password, e);
         },
-        register: function () {
-            this.sendRequest('register', this.$router, this.username, this.password);
+        register(e) {
+            this.sendRequest('register', this.$router, this.username, this.password, e);
         },
-        sendRequest: function (type, router, username, password) {
-            setTimeout(function () {
+        sendRequest(type, router, username, password, e) {
+            setTimeout(async function () {
+                e.target.classList.add('loading');
                 if ($('.ui.large.form').hasClass('success')) {
-                    axios.post('http://localhost:8081/api/auth/' + type, {
+                    await axios.post('http://localhost:8081/api/auth/' + type, {
                         username,
                         password
                     }).then(response => {
                         localStorage.setItem("jwt", response.data);
-                        router.push({name: 'main'});
+                        router.push('main');
                     }).catch(error => {
                         let msg_parts = error.response.data.split(':');
                         if (msg_parts[0] === '0') {
@@ -127,8 +121,9 @@ export default {
                         let err_msg = $('.error.message');
                         err_msg.html('<ul class="list"><li>' + msg_parts[1] + '</li></ul>');
                         err_msg.css('display', 'block');
-                    })
+                    });
                 }
+                e.target.classList.remove('loading');
             }, 0)
         }
     }

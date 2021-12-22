@@ -12,6 +12,18 @@
 .ui.inverted.vertical.center.aligned.footer.segment {
     padding: 19px;
 }
+.ui.blue.submit.button:focus {
+    background-color: #2185D0;
+}
+.ui.blue.submit.button:hover {
+    background-color: #1678c2;
+}
+.ui.green.submit.button:focus {
+    background-color: #21BA45;
+}
+.ui.green.submit.button:hover {
+    background-color: #16ab39;
+}
 @media all and (min-width:1046px) {
     #canvas {
         width: 264px;
