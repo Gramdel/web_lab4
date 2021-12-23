@@ -33,6 +33,10 @@
 .ui.green.submit.button:active {
     background-color: #198f35;
 }
+.ui.large.inverted.secondary.menu.adaptive .active.item:hover {
+    cursor: default;
+    background-color: rgba(255, 255, 255, 0.15);
+}
 @media all and (min-width:1046px) {
     #canvas {
         width: 264px;

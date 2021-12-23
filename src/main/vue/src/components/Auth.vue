@@ -40,7 +40,7 @@
         <div class="ui inverted vertical center aligned segment">
             <h2 class="ui header inverted grey">Асташин Сергей P3230 | Вариант 30903</h2>
         </div>
-        <div class="ui middle aligned center aligned grid" style="margin-top: 75px;">
+        <div class="ui middle aligned center aligned grid" style="margin-top: 89px;">
             <div class="column" style="width: 400px;">
                 <div class="ui raised black segment">
                     <h2 class="ui header">Authentication</h2>
@@ -66,9 +66,6 @@
                                     @click="register">
                                 Register
                             </button>
-                        </div>
-                        <div class="ui fitted horizontal divider" style="margin-top: 11px;">
-                            <a href="" class="forgot">Forgot password?</a>
                         </div>
                         <div class="ui error message"></div>
                     </form>
@@ -105,7 +102,7 @@ export default {
             setTimeout(async function () {
                 e.target.classList.add('loading');
                 if ($('.ui.large.form').hasClass('success')) {
-                    await axios.post('http://localhost:8081/api/auth/' + type, {
+                    await axios.post('/api/auth/' + type, {
                         username,
                         password
                     }).then(response => {

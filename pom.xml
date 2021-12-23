@@ -97,7 +97,6 @@
                             <resources>
                                 <resource>
                                     <directory>src/main/vue/dist</directory>
-                                    <filtering>true</filtering>
                                 </resource>
                             </resources>
                         </configuration>

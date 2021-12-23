@@ -13,14 +13,14 @@ import java.io.IOException;
 public class CorsFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
+    protected void doFilterInternal(final HttpServletRequest req, final HttpServletResponse resp,
                                     final FilterChain filterChain) throws ServletException, IOException {
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        response.addHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, PATCH, HEAD");
-        response.addHeader("Access-Control-Allow-Headers", "Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization");
-        response.addHeader("Access-Control-Expose-Headers", "Access-Control-Allow-Origin, Access-Control-Allow-Credentials");
-        response.addHeader("Access-Control-Allow-Credentials", "true");
-        response.addIntHeader("Access-Control-Max-Age", 10);
-        filterChain.doFilter(request, response);
+        resp.addHeader("Access-Control-Allow-Origin", "http://localhost:8080");
+        resp.addHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, PATCH, HEAD");
+        resp.addHeader("Access-Control-Allow-Headers", "Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization");
+        resp.addHeader("Access-Control-Expose-Headers", "Access-Control-Allow-Origin, Access-Control-Allow-Credentials");
+        resp.addHeader("Access-Control-Allow-Credentials", "true");
+        resp.addIntHeader("Access-Control-Max-Age", 10);
+        filterChain.doFilter(req, resp);
     }
 }

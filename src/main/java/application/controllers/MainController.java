@@ -17,7 +17,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/api/points")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:8080")
 public class MainController {
     @Autowired
     private PointRepository pointRepository;
@@ -29,7 +29,7 @@ public class MainController {
     @GetMapping(value = "/get", produces = {MediaType.APPLICATION_JSON_VALUE})
     private ResponseEntity<?> getPoints(HttpServletRequest req) {
         String token = jwtUtils.getTokenFromRequest(req);
-        if (token != null) {
+        if (token != null  && jwtUtils.validateToken(token)) {
             User user = userRepository.getUserByUsername(jwtUtils.getUsernameFromToken(token));
             if (user != null) {
                 return ResponseEntity.ok().body(pointRepository.getAllByUsername(user.getUsername()));
@@ -45,8 +45,7 @@ public class MainController {
             produces = {MediaType.APPLICATION_JSON_VALUE})
     private ResponseEntity<?> addPoint(@RequestBody PointRequest pointRequest, HttpServletRequest req) {
         String token = jwtUtils.getTokenFromRequest(req);
-        System.out.println(token);
-        if (token != null) {
+        if (token != null && jwtUtils.validateToken(token)) {
             User user = userRepository.getUserByUsername(jwtUtils.getUsernameFromToken(token));
             if (user != null) {
                 double x = pointRequest.getX();
@@ -64,14 +63,23 @@ public class MainController {
     }
 
     private boolean pointIsInTriangle(double x, double y, double r) {
-        return (y <= r / 2 - x / 2) && (y >= 0) && (x >= 0);
+        if (r > 0) {
+            return (y <= r / 2 - x / 2) && (y >= 0) && (x >= 0);
+        }
+        return (y >= r / 2 - x / 2) && (y <= 0) && (x <= 0);
     }
 
     private boolean pointIsInCircle(double x, double y, double r) {
-        return (x * x + y * y <= r * r / 4) && (y >= 0) && (x <= 0);
+        if (r > 0) {
+            return (x * x + y * y <= r * r / 4) && (y >= 0) && (x <= 0);
+        }
+        return (x * x + y * y <= r * r / 4) && (y <= 0) && (x >= 0);
     }
 
     private boolean pointIsInRectangle(double x, double y, double r) {
-        return (y >= -r) && (y <= 0) && (x >= -r) && (x <= 0);
+        if (r > 0) {
+            return (y >= -r) && (y <= 0) && (x >= -r) && (x <= 0);
+        }
+        return (y <= -r) && (y >= 0) && (x <= -r) && (x >= 0);
     }
 }

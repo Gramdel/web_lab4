@@ -35,13 +35,10 @@
              style="padding: 8.5px; position: sticky; top: 0; margin-top: 0; z-index: 101; width: 100%;">
             <div class="ui large inverted secondary menu adaptive">
                 <a class="active item">
-                    <i class="home icon"></i>Home
+                    <i class="home icon"></i>Main
                 </a>
                 <a class="item" href="/profile">
                     Profile
-                </a>
-                <a class="item" href="/auth">
-                    Auth
                 </a>
                 <div class="right menu">
                     <a class="item" @click="logout">
@@ -208,19 +205,15 @@ import $ from 'jquery';
 import axios from 'axios';
 
 export default {
-    created() {
-        if (localStorage.getItem('jwt') == null) {
-            this.$router.push('auth');
-        }
-    },
     methods: {
         logout() {
             localStorage.removeItem('jwt');
             this.$router.push('auth');
         },
         getPoints() {
+            let router = this.$router;
             let drawPoint = this.drawPoint;
-            axios.get('http://localhost:8081/api/points/get', {
+            axios.get('/api/points/get', {
                 headers: {'Authorization': 'Bearer ' + localStorage.getItem('jwt')}
             }).then(response => {
                 if (response.data.length > 0) {
@@ -235,21 +228,22 @@ export default {
                     $('table').css('display', 'table');
                     $('.black.segment .error.message').css('display', 'none');
                 }
-            }).catch(error => {
-                console.log(error);
-                //this.$router.push({name: 'error-page-expired'})
-            })
+            }).catch(function () {
+                localStorage.removeItem('jwt');
+                router.push('auth');
+            });
         },
         submit() {
             this.addPoint(false, $('input[name=x]:checked').val(), $('input[name=y]').val(), $('input[name=r]:checked').val());
         },
         addPoint(auto, x, y, r) {
             let getPoints = this.getPoints;
+            let router = this.$router;
             setTimeout(async function () {
                 let button = $('.green.button');
                 button.addClass('loading');
                 if (auto === true || $('.ui.form').hasClass('success')) {
-                    await axios.post('http://localhost:8081/api/points/add', {
+                    await axios.post('/api/points/add', {
                         x,
                         y,
                         r,
@@ -257,10 +251,10 @@ export default {
                         headers: {'Authorization': 'Bearer ' + localStorage.getItem('jwt')}
                     }).then(function () {
                         getPoints();
-                    }).catch(error => {
-                        console.log(error);
-                        //this.$router.push({name: 'error-page-expired'})
-                    })
+                    }).catch(function () {
+                        localStorage.removeItem('jwt');
+                        router.push('auth');
+                    });
                 }
                 button.removeClass('loading');
             }, 1);
@@ -268,8 +262,8 @@ export default {
         configureCanvas(canvas, context) {
             canvas.width = getComputedStyle(canvas).width.split('px')[0]; // получаем ширину canvas из его css ширины
             canvas.height = getComputedStyle(canvas).height.split('px')[0]; // получаем длину canvas из его css ширины
-            canvas.width = Math.ceil(canvas.width * 2); // увеличиваем в 2 раза
-            canvas.height = Math.ceil(canvas.height * 2); // увеличиваем в 2 раза
+            canvas.width = Math.ceil(canvas.width * 4); // увеличиваем в 4 раза
+            canvas.height = Math.ceil(canvas.height * 4); // увеличиваем в 4 раза
             context.scale(canvas.width / 264, canvas.height / 264); // увеличиваем масштаб, получаем более хорошее качество
         },
         drawArea(r, canvas, context) {
@@ -347,16 +341,14 @@ export default {
                 context.fillText('R', 132.5 - Math.abs(r) * 18 * 2 - 5, 148); // R по x
                 context.fillText('R', 132.5 + Math.abs(r) * 18 * 2 - 3, 148);
             } else {
-                context.fillText('R', 122, 145);
+                context.fillText('R', 122, 145); // R = 0
             }
-
             if (Math.abs(r) > 1) {
                 context.fillText('0.5R', 120 - 19, 132.5 - Math.abs(r) * 18 + 2); // 0.5R по y
                 context.fillText('0.5R', 120 - 19, 132.5 + Math.abs(r) * 18 + 4);
                 context.fillText('0.5R', 132.5 - Math.abs(r) * 18 - 10, 148); // 0.5R по x
                 context.fillText('0.5R', 132.5 + Math.abs(r) * 18 - 8, 148);
             }
-            //drawPointsFromHistory(); // заполняем точки из истории
         },
         drawPoint(x, y, canvas, context) {
             let dotX;
@@ -375,52 +367,50 @@ export default {
             } else {
                 dotY = -y * 36 + 134.4;
             }
-
             context.fillStyle = '#FF0000';
             context.font = '21px Lato';
             context.fillText(".", dotX, dotY);
         }
     },
     mounted() {
-        let canvas = document.getElementById('canvas');
-        let context = canvas.getContext('2d');
-        let configureCanvas = this.configureCanvas;
-        let drawPoint = this.drawPoint;
-        let addPoint = this.addPoint;
-        let getPoints = this.getPoints;
-        let drawArea = this.drawArea;
-        canvas.addEventListener('click', function (e) {
-            let diffX = e.clientX - e.target.getBoundingClientRect().left;
-            let diffY = e.clientY - e.target.getBoundingClientRect().top;
+        if (localStorage.getItem('jwt') == null) {
+            this.$router.push('auth');
+        } else {
+            let canvas = document.getElementById('canvas');
+            let context = canvas.getContext('2d');
+            let configureCanvas = this.configureCanvas;
+            let addPoint = this.addPoint;
+            let getPoints = this.getPoints;
+            let drawArea = this.drawArea;
+            canvas.addEventListener('click', function (e) {
+                if (canvas.width !== Math.ceil(4 * getComputedStyle(canvas).width.split('px')[0])) {
+                    configureCanvas(canvas, context);
+                    drawArea($('input[name=r]:checked').val(), canvas, context);
+                }
 
-            let x, y;
-            if (canvas.width / 2 === 264) {
-                x = Number(((diffX - 132) / 36).toFixed(1));
-                y = Number(((diffY - 132) / -36).toFixed(1));
-            } else {
-                x = Number(((diffX - 95) / 26 - 0.063).toFixed(1));
-                y = Number(((diffY - 95) / -26 + 0.063).toFixed(1));
-            }
+                let diffX = e.clientX - e.target.getBoundingClientRect().left;
+                let diffY = e.clientY - e.target.getBoundingClientRect().top;
+                let x, y;
+                if (canvas.width / 4 === 264) {
+                    x = Number(((diffX - 132) / 36).toFixed(1));
+                    y = Number(((diffY - 132) / -36).toFixed(1));
+                } else {
+                    x = Number(((diffX - 95) / 26 - 0.06).toFixed(1));
+                    y = Number(((diffY - 95) / -26 + 0.06).toFixed(1));
+                }
 
-            drawPoint(x, y, canvas, context);
-            addPoint(true, x, y, $('input[name=r]:checked').val());
-        });
-        window.addEventListener('resize', function () {
-            setTimeout(function() {
-                console.log(1);
-                configureCanvas(canvas, context);
-                drawArea($('input[name=r]:checked').val(), canvas, context);
-                getPoints();
-            }, 5);
-        });
-        document.querySelectorAll('input[name=r]').forEach(radio => {
-            radio.onclick = function () {
-                drawArea(radio.value, canvas, context);
-            };
-        });
-        configureCanvas(canvas, context);
-        drawArea($('input[name=r]:checked').val(), canvas, context);
-        getPoints();
+                addPoint(true, x, y, $('input[name=r]:checked').val());
+            });
+            document.querySelectorAll('input[name=r]').forEach(radio => {
+                radio.onclick = function () {
+                    drawArea(radio.value, canvas, context);
+                    getPoints();
+                };
+            });
+            configureCanvas(canvas, context);
+            drawArea($('input[name=r]:checked').val(), canvas, context);
+            getPoints();
+        }
     }
 }
 </script>

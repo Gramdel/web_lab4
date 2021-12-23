@@ -50,10 +50,6 @@ public class JwtUtils {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public Date getExpirationDateFromToken(String token) {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getExpiration();
-    }
-
     public String getTokenFromRequest(HttpServletRequest request) {
         String header = request.getHeader(AUTHORIZATION);
         if (hasText(header) && header.startsWith("Bearer ")) {
