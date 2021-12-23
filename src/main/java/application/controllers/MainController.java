@@ -17,7 +17,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/api/points")
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "*")
 public class MainController {
     @Autowired
     private PointRepository pointRepository;
@@ -34,10 +34,8 @@ public class MainController {
             if (user != null) {
                 return ResponseEntity.ok().body(pointRepository.getAllByUsername(user.getUsername()));
             }
-            return new ResponseEntity<>("User not found", HttpStatus.FORBIDDEN);
-        } else {
-            return new ResponseEntity<>("Your authorization token is invalid. Please, login again!", HttpStatus.FORBIDDEN);
         }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PostMapping(value = "/add",

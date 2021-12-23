@@ -37,9 +37,6 @@
                 <a class="active item">
                     <i class="home icon"></i>Main
                 </a>
-                <a class="item" href="/profile">
-                    Profile
-                </a>
                 <div class="right menu">
                     <a class="item" @click="logout">
                         Logout&nbsp;<i class="sign-out icon"></i>
