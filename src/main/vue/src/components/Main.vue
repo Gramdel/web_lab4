@@ -37,6 +37,9 @@
                 <a class="active item">
                     <i class="home icon"></i>Home
                 </a>
+                <a class="item" href="/profile">
+                    Profile
+                </a>
                 <a class="item" href="/auth">
                     Auth
                 </a>
@@ -50,12 +53,12 @@
         <form class="ui form adaptive">
             <div class="ui raised blue segment adaptive">
                 <h2 class="ui header" style="text-align: center;">Graph</h2>
-                <canvas id="canvas"/>
+                <canvas id="canvas" title="Click to add a point"/>
             </div>
             <div class="ui raised green segment adaptive">
                 <h2 class="ui header" style="text-align: center;">Add point</h2>
                 <h4 style="margin-top: 0;">Coordinate X</h4>
-                <div class="field" style="display: inline-block; margin-right: 1em;margin-bottom: 19px;">
+                <div class="field" style="display: inline-block; margin-right: 1em;margin-bottom: 16px;">
                     <div class="ui radio checkbox">
                         <input type="radio" name="x" tabindex="0" value="-4">
                         <label>-4</label>
@@ -109,13 +112,12 @@
                         <label>4</label>
                     </div>
                 </div>
-
                 <h4 style="margin-top: 0;">Coordinate Y</h4>
                 <div class="field">
                     <input type="text" name="y">
                 </div>
                 <h4 style="margin-top: 0;">Radius</h4>
-                <div class="field" style="display: inline-block; margin-right: 1em; margin-bottom: 19px;">
+                <div class="field" style="display: inline-block; margin-right: 1em; margin-bottom: 16px;">
                     <div class="ui radio checkbox">
                         <input type="radio" name="r" tabindex="0" value="-4">
                         <label>-4</label>
@@ -169,7 +171,8 @@
                         <label>4</label>
                     </div>
                 </div>
-                <button class="ui fluid large green button" style="text-align: center;" type="submit">
+                <button class="ui fluid large green submit button" style="text-align: center;" type="submit"
+                        @click="submit">
                     Submit
                 </button>
             </div>
@@ -178,10 +181,12 @@
         </form>
         <div class="ui raised black segment adaptive">
             <h2 class="ui header" style="text-align: center;">History of results</h2>
-            <div class="ui error message">
-                Nothing to show: history is empty!
+            <div class="ui error message" style="margin-bottom: 0;">
+                <ul class="list">
+                    <li>Nothing to show: history is empty!</li>
+                </ul>
             </div>
-            <table class="ui celled unstackable center aligned table adaptive">
+            <table class="ui celled unstackable center aligned table adaptive" style="display: none; margin-top: 14px;">
                 <thead>
                 <tr>
                     <th>X</th>
@@ -192,20 +197,6 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Jamie</td>
-                    <td>Unknown</td>
-                    <td>Jamie</td>
-                    <td class="positive"><i class="icon check"></i></td>
-                    <td>Unknown</td>
-                </tr>
-                <tr>
-                    <td>Jamie</td>
-                    <td>Unknown</td>
-                    <td>Jamie</td>
-                    <td class="negative"><i class="icon close"></i></td>
-                    <td>Unknown</td>
-                </tr>
                 </tbody>
             </table>
         </div>
@@ -214,138 +205,11 @@
 
 <script>
 import $ from 'jquery';
-
-//import axios from "axios";
-
-function drawArea(r) {
-    let canvas = document.getElementById('canvas');
-    let context = canvas.getContext('2d');
-
-    canvas.width = getComputedStyle(canvas).width.split('px')[0]; // получаем ширину canvas из его css ширины
-    canvas.height = getComputedStyle(canvas).height.split('px')[0]; // получаем длину canvas из его css ширины
-    canvas.width = Math.ceil(canvas.width * 2); // увеличиваем в 2 раза
-    canvas.height = Math.ceil(canvas.height * 2); // увеличиваем в 2 раза
-    context.scale(canvas.width / 264, canvas.height / 264); // увеличиваем масштаб, получаем более хорошее качество
-    context.clearRect(0, 0, canvas.width, canvas.height); // очистка перед новой отрисовкой
-
-    context.fillStyle = "black";
-    context.lineWidth = 1;
-    context.beginPath(); // оси
-    context.moveTo(132.5, 0);
-    context.lineTo(132.5, 264);
-    context.moveTo(128, 6);
-    context.lineTo(132.5, 0);
-    context.moveTo(137, 6);
-    context.lineTo(132.5, 0);
-    context.moveTo(0, 132.5);
-    context.lineTo(264, 132.5);
-    context.moveTo(258, 137);
-    context.lineTo(264, 132.5);
-    context.moveTo(258, 128);
-    context.lineTo(264, 132.5);
-    context.stroke();
-
-    context.font = "1em Lato"; // подписи осей
-    context.fillText("Y", 120, 11);
-    context.fillText("X", 255, 148);
-
-    context.fillStyle = "#2185D0";
-    if (r > 0) {
-        context.fillRect(132.5 - r * 18 * 2 - 1.5, 133, r * 18 * 2 + 1, r * 18 * 2 + 1); // прямоугольник
-
-        context.beginPath(); // треугольник
-        context.moveTo(133, 132);
-        context.lineTo(133 + r * 18 * 2 + 1.5, 132);
-        context.lineTo(133, 132 - r * 18 - 1);
-        context.lineTo(133, 132);
-        context.fill();
-
-        context.beginPath(); // круг
-        context.arc(132, 132, r * 18 + 1, -Math.PI / 2, -Math.PI, true);
-        context.lineTo(132, 132);
-        context.fill();
-    } else if (r < 0) {
-        context.fillRect(134 - r * 18 * 2, 132, r * 18 * 2 - 1, r * 18 * 2 - 1); // прямоугольник
-
-        context.beginPath(); // треугольник
-        context.moveTo(132, 133);
-        context.lineTo(132 + r * 18 * 2 - 1, 133);
-        context.lineTo(132, 134 - r * 18);
-        context.lineTo(132, 133);
-        context.fill();
-
-        context.beginPath(); // круг
-        context.arc(133, 133, Math.abs(r) * 18 + 1, Math.PI / 2, 0, true);
-        context.lineTo(133, 133);
-        context.fill();
-    }
-
-    for (let i = 1; i <= 6; i++) {
-        context.beginPath();
-        context.moveTo(132.5 + i * 18 + 1, 130); // насечки по x вправо
-        context.lineTo(132.5 + i * 18 + 1, 135);
-        context.moveTo(132.5 - i * 18 - 1, 130); // насечки по x влево
-        context.lineTo(132.5 - i * 18 - 1, 135);
-        context.moveTo(130, 132.5 + i * 18 + 1); // насечки по y вниз
-        context.lineTo(135, 132.5 + i * 18 + 1);
-        context.moveTo(130, 132.5 - i * 18 - 1); // насечки по y вверх
-        context.lineTo(135, 132.5 - i * 18 - 1);
-        context.stroke();
-    }
-
-    context.fillStyle = "black";
-    if (r > 0) {
-        context.fillText("R", 120, 132.5 - Math.abs(r) * 18 * 2 + 2); // R по y
-        context.fillText("R", 120, 132.5 + Math.abs(r) * 18 * 2 + 4);
-    } else {
-        context.fillText("R", 122, 145);
-    }
-    if (Math.abs(r) > 1) {
-        context.fillText("0.5R", 120 - 19, 132.5 - Math.abs(r) * 18 + 2); // 0.5R по y
-        context.fillText("0.5R", 120 - 19, 132.5 + Math.abs(r) * 18 + 4);
-    }
-    if (r > 0) {
-        context.fillText("R", 132.5 - Math.abs(r) * 18 * 2 - 5, 148); // R по x
-        context.fillText("R", 132.5 + Math.abs(r) * 18 * 2 - 3, 148);
-    }
-    if (Math.abs(r) > 1) {
-        context.fillText("0.5R", 132.5 - Math.abs(r) * 18 - 10, 148); // 0.5R по x
-        context.fillText("0.5R", 132.5 + Math.abs(r) * 18 - 8, 148);
-    }
-
-    canvas.addEventListener('mouseup', function (e) {
-        let x = e.pageX - e.target.offsetLeft;
-        let y = e.pageY - e.target.offsetTop;
-
-        if (canvas.width / 2 === 264) {
-            $('x').value = ((x - 504) / 36).toFixed(1);
-            $('y').value = ((y - 243) / -36).toFixed(1);
-            console.log('x = ' + ((x - 504) / 36).toFixed(1));
-            console.log('y = ' + ((y - 243) / -36 - 0.015).toFixed(1));
-
-            context.fillStyle = '#FF0000';
-            context.font = "21px Lato";
-            context.fillText(".", x - 382, y - 110);
-            //context.fillRect(x * 36 + 504 - 1.5, y * -36 + 243 - 2, 2, 2);
-        } else {
-            $('x').value = ((x - 115) / 26).toFixed(1);
-            $('y').value = ((y - 172) / -26).toFixed(1);
-            console.log('x = ' + ((x - 114) / 26 + 0.01).toFixed(1));
-            console.log('y = ' + ((y - 172) / -26).toFixed(1));
-
-            context.fillStyle = '#FF0000';
-            context.font = "21px Lato";
-            context.fillText(".", x + 16, y - 30);
-        }
-        //$('form').submit();
-    });
-
-    //drawPointsFromHistory(); // заполняем точки из истории
-}
+import axios from 'axios';
 
 export default {
     created() {
-        if(localStorage.getItem('jwt') == null) {
+        if (localStorage.getItem('jwt') == null) {
             this.$router.push('auth');
         }
     },
@@ -354,16 +218,209 @@ export default {
             localStorage.removeItem('jwt');
             this.$router.push('auth');
         },
+        getPoints() {
+            let drawPoint = this.drawPoint;
+            axios.get('http://localhost:8081/api/points/get', {
+                headers: {'Authorization': 'Bearer ' + localStorage.getItem('jwt')}
+            }).then(response => {
+                if (response.data.length > 0) {
+                    $('tbody').html('');
+                    response.data.forEach(e => {
+                        let date = new Date(e.date);
+                        date = ('0' + date.getDate()).slice(-2) + '.' + ('0' + (date.getMonth() + 1)).slice(-2) + '.' + date.getFullYear() + ' ' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2);
+                        let tr = '<tr><td>' + e.x + '</td><td>' + e.y + '</td><td>' + e.r + '</td><td class=' + (e.inArea === true ? '"positive"><i class="icon check">' : '"negative"><i class="icon close">') + '</i></td><td>' + date + '</td></tr>';
+                        $('tbody').append(tr);
+                        drawPoint(e.x, e.y, document.getElementById('canvas'), document.getElementById('canvas').getContext('2d'));
+                    });
+                    $('table').css('display', 'table');
+                    $('.black.segment .error.message').css('display', 'none');
+                }
+            }).catch(error => {
+                console.log(error);
+                //this.$router.push({name: 'error-page-expired'})
+            })
+        },
+        submit() {
+            this.addPoint(false, $('input[name=x]:checked').val(), $('input[name=y]').val(), $('input[name=r]:checked').val());
+        },
+        addPoint(auto, x, y, r) {
+            let getPoints = this.getPoints;
+            setTimeout(async function () {
+                let button = $('.green.button');
+                button.addClass('loading');
+                if (auto === true || $('.ui.form').hasClass('success')) {
+                    await axios.post('http://localhost:8081/api/points/add', {
+                        x,
+                        y,
+                        r,
+                    }, {
+                        headers: {'Authorization': 'Bearer ' + localStorage.getItem('jwt')}
+                    }).then(function () {
+                        getPoints();
+                    }).catch(error => {
+                        console.log(error);
+                        //this.$router.push({name: 'error-page-expired'})
+                    })
+                }
+                button.removeClass('loading');
+            }, 1);
+        },
+        configureCanvas(canvas, context) {
+            canvas.width = getComputedStyle(canvas).width.split('px')[0]; // получаем ширину canvas из его css ширины
+            canvas.height = getComputedStyle(canvas).height.split('px')[0]; // получаем длину canvas из его css ширины
+            canvas.width = Math.ceil(canvas.width * 2); // увеличиваем в 2 раза
+            canvas.height = Math.ceil(canvas.height * 2); // увеличиваем в 2 раза
+            context.scale(canvas.width / 264, canvas.height / 264); // увеличиваем масштаб, получаем более хорошее качество
+        },
+        drawArea(r, canvas, context) {
+            context.clearRect(0, 0, canvas.width, canvas.height); // очистка перед новой отрисовкой
+
+            context.fillStyle = 'black';
+            context.lineWidth = 1;
+            context.beginPath(); // оси
+            context.moveTo(132.5, 0);
+            context.lineTo(132.5, 264);
+            context.moveTo(128, 6);
+            context.lineTo(132.5, 0);
+            context.moveTo(137, 6);
+            context.lineTo(132.5, 0);
+            context.moveTo(0, 132.5);
+            context.lineTo(264, 132.5);
+            context.moveTo(258, 137);
+            context.lineTo(264, 132.5);
+            context.moveTo(258, 128);
+            context.lineTo(264, 132.5);
+            context.stroke();
+
+            context.font = '1em Lato'; // подписи осей
+            context.fillText('Y', 120, 11);
+            context.fillText('X', 255, 148);
+
+            context.fillStyle = '#2185D0';
+            if (r > 0) {
+                context.fillRect(132.5 - r * 18 * 2 - 1.5, 133, r * 18 * 2 + 1, r * 18 * 2 + 1); // прямоугольник
+
+                context.beginPath(); // треугольник
+                context.moveTo(133, 132);
+                context.lineTo(133 + r * 18 * 2 + 1.5, 132);
+                context.lineTo(133, 132 - r * 18 - 1);
+                context.lineTo(133, 132);
+                context.fill();
+
+                context.beginPath(); // круг
+                context.arc(132, 132, r * 18 + 1, -Math.PI / 2, -Math.PI, true);
+                context.lineTo(132, 132);
+                context.fill();
+            } else if (r < 0) {
+                context.fillRect(134 - r * 18 * 2, 132, r * 18 * 2 - 1, r * 18 * 2 - 1); // прямоугольник
+
+                context.beginPath(); // треугольник
+                context.moveTo(132, 133);
+                context.lineTo(132 + r * 18 * 2 - 1, 133);
+                context.lineTo(132, 134 - r * 18);
+                context.lineTo(132, 133);
+                context.fill();
+
+                context.beginPath(); // круг
+                context.arc(133, 133, Math.abs(r) * 18 + 1, Math.PI / 2, 0, true);
+                context.lineTo(133, 133);
+                context.fill();
+            }
+
+            for (let i = 1; i <= 6; i++) {
+                context.beginPath();
+                context.moveTo(132.5 + i * 18 + 1, 130); // насечки по x вправо
+                context.lineTo(132.5 + i * 18 + 1, 135);
+                context.moveTo(132.5 - i * 18 - 1, 130); // насечки по x влево
+                context.lineTo(132.5 - i * 18 - 1, 135);
+                context.moveTo(130, 132.5 + i * 18 + 1); // насечки по y вниз
+                context.lineTo(135, 132.5 + i * 18 + 1);
+                context.moveTo(130, 132.5 - i * 18 - 1); // насечки по y вверх
+                context.lineTo(135, 132.5 - i * 18 - 1);
+                context.stroke();
+            }
+
+            context.fillStyle = "black";
+            if (r !== '0') {
+                context.fillText('R', 120, 132.5 - Math.abs(r) * 18 * 2 + 2); // R по y
+                context.fillText('R', 120, 132.5 + Math.abs(r) * 18 * 2 + 4);
+                context.fillText('R', 132.5 - Math.abs(r) * 18 * 2 - 5, 148); // R по x
+                context.fillText('R', 132.5 + Math.abs(r) * 18 * 2 - 3, 148);
+            } else {
+                context.fillText('R', 122, 145);
+            }
+
+            if (Math.abs(r) > 1) {
+                context.fillText('0.5R', 120 - 19, 132.5 - Math.abs(r) * 18 + 2); // 0.5R по y
+                context.fillText('0.5R', 120 - 19, 132.5 + Math.abs(r) * 18 + 4);
+                context.fillText('0.5R', 132.5 - Math.abs(r) * 18 - 10, 148); // 0.5R по x
+                context.fillText('0.5R', 132.5 + Math.abs(r) * 18 - 8, 148);
+            }
+            //drawPointsFromHistory(); // заполняем точки из истории
+        },
+        drawPoint(x, y, canvas, context) {
+            let dotX;
+            let dotY;
+            if (x === 0) {
+                dotX = 130.4;
+            } else if (x > 0) {
+                dotX = x * 36 + 131.4;
+            } else {
+                dotX = x * 36 + 129.4;
+            }
+            if (y === 0) {
+                dotY = 133.4;
+            } else if (y > 0) {
+                dotY = -y * 36 + 132.4;
+            } else {
+                dotY = -y * 36 + 134.4;
+            }
+
+            context.fillStyle = '#FF0000';
+            context.font = '21px Lato';
+            context.fillText(".", dotX, dotY);
+        }
     },
     mounted() {
-        let list = $('input[name=r]');
-        for (let i = 0; i < list.length; i++) {
-            let radio = list[i];
+        let canvas = document.getElementById('canvas');
+        let context = canvas.getContext('2d');
+        let configureCanvas = this.configureCanvas;
+        let drawPoint = this.drawPoint;
+        let addPoint = this.addPoint;
+        let getPoints = this.getPoints;
+        let drawArea = this.drawArea;
+        canvas.addEventListener('click', function (e) {
+            let diffX = e.clientX - e.target.getBoundingClientRect().left;
+            let diffY = e.clientY - e.target.getBoundingClientRect().top;
+
+            let x, y;
+            if (canvas.width / 2 === 264) {
+                x = Number(((diffX - 132) / 36).toFixed(1));
+                y = Number(((diffY - 132) / -36).toFixed(1));
+            } else {
+                x = Number(((diffX - 95) / 26 - 0.063).toFixed(1));
+                y = Number(((diffY - 95) / -26 + 0.063).toFixed(1));
+            }
+
+            drawPoint(x, y, canvas, context);
+            addPoint(true, x, y, $('input[name=r]:checked').val());
+        });
+        window.addEventListener('resize', function () {
+            setTimeout(function() {
+                console.log(1);
+                configureCanvas(canvas, context);
+                drawArea($('input[name=r]:checked').val(), canvas, context);
+                getPoints();
+            }, 5);
+        });
+        document.querySelectorAll('input[name=r]').forEach(radio => {
             radio.onclick = function () {
-                drawArea(radio.value);
+                drawArea(radio.value, canvas, context);
             };
-        }
-        drawArea(3);
+        });
+        configureCanvas(canvas, context);
+        drawArea($('input[name=r]:checked').val(), canvas, context);
+        getPoints();
     }
 }
 </script>

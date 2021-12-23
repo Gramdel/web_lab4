@@ -1,7 +1,6 @@
 package application.entities;
 
 import javax.persistence.*;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
@@ -27,8 +26,8 @@ public class Point {
     @Column(name = "date")
     private Date date;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "username")
+    private String username;
 
     public void setId(Long id) {
         this.id = id;
@@ -78,16 +77,24 @@ public class Point {
         return date;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    @Override
-    public String toString() {
-        return "<tr><td>" + x + "</td><td>" + y + "</td><td>" + r + "</td><td>" + (isInArea ? "Да" : "Нет") + "</td><td>" + (new SimpleDateFormat("dd.MM.yy HH:mm:ss")).format(date) + "</td></tr>";
+    public Point() {
+
+    }
+
+    public Point(double x, double y, double r, boolean isInArea, Date date, String username) {
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.isInArea = isInArea;
+        this.date = date;
+        this.username = username;
     }
 }

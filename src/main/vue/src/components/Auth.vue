@@ -124,7 +124,7 @@ export default {
                     });
                 }
                 e.target.classList.remove('loading');
-            }, 0)
+            }, 1);
         }
     }
 }

@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface PointRepository extends JpaRepository<Point,Long> {
-    List<Point> getAllByUserId(Long userId);
+    List<Point> getAllByUsername(String username);
 }

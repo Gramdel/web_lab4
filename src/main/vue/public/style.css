@@ -5,6 +5,9 @@
     border: 1px solid rgba(34, 36, 38, 0.15);
     border-radius: 0.28571429rem;
 }
+#canvas:hover {
+    cursor: pointer;
+}
 .ui.inverted.vertical.center.aligned.segment {
     margin-top: 0;
     padding: 16.3px;
@@ -18,11 +21,17 @@
 .ui.blue.submit.button:hover {
     background-color: #1678c2;
 }
+.ui.blue.submit.button:active {
+    background-color: #1a69a4;
+}
 .ui.green.submit.button:focus {
     background-color: #21BA45;
 }
 .ui.green.submit.button:hover {
     background-color: #16ab39;
+}
+.ui.green.submit.button:active {
+    background-color: #198f35;
 }
 @media all and (min-width:1046px) {
     #canvas {
@@ -58,7 +67,7 @@
 }
 @media all and (min-width:719px) and (max-width:1045px) {
     #canvas {
-        margin-top: 36px;
+        margin-top: 31px;
         width: 192px;
         height: 192px;
     }

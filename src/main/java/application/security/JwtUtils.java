@@ -4,7 +4,11 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+
+import static io.jsonwebtoken.lang.Strings.hasText;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Component
 public class JwtUtils {
@@ -24,10 +28,6 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String getUsernameFromToken(String token) {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
-    }
-
     public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
@@ -44,5 +44,21 @@ public class JwtUtils {
             System.out.println("JWT claims string is empty! " + e.getMessage());
         }
         return false;
+    }
+
+    public String getUsernameFromToken(String token) {
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public Date getExpirationDateFromToken(String token) {
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getExpiration();
+    }
+
+    public String getTokenFromRequest(HttpServletRequest request) {
+        String header = request.getHeader(AUTHORIZATION);
+        if (hasText(header) && header.startsWith("Bearer ")) {
+            return header.substring(7);
+        }
+        return null;
     }
 }
